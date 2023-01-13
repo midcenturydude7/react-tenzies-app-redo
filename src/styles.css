@@ -26,6 +26,17 @@ main {
   height: 90vh;
 }
 
+.title {
+  font-size: 3.5rem;
+  margin: 0 0 .5em 0;
+}
+
+.instructions {
+  font-size: 1.1rem;
+  text-align: center;
+  max-width: 75%;
+}
+
 .dice-container {
   display: grid;
   grid-template: auto auto / repeat(5, 1fr);
