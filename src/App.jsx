@@ -2,10 +2,20 @@
 import React from "react";
 import Die from "./Components/Die";
 import { nanoid } from "nanoid";
+import Confetti from "react-confetti";
 
 function App() {
   
   const [dice, setDice] = React.useState(allNewDice());
+  // eslint-disable-next-line no-unused-vars
+  const [tenzies, setTenzies] = React.useState(false);
+
+  React.useEffect(() => {
+    const allHeld = dice.every(die => die.isHeld);
+    const firstValue = dice[0].value;
+    const allSameValue = dice.every(die => die.value === firstValue);
+    allHeld && allSameValue ? setTenzies(true) : "";
+  }, [dice]);
 
   function generateNewDie() {
     return {
@@ -24,10 +34,15 @@ function App() {
   }
 
   function rollDice() {
-    setDice(oldDice => oldDice.map(die => {
-      return die.isHeld ? die 
-        : generateNewDie();
-    }));
+    if(!tenzies) {
+      setDice(oldDice => oldDice.map(die => {
+        return die.isHeld ? die 
+          : generateNewDie();
+      })); 
+    } else {
+      setTenzies(false);
+      setDice(allNewDice());
+    }
   }
 
   function holdDice(id) {
@@ -45,6 +60,7 @@ function App() {
 
   return (
     <main>
+      {tenzies && <Confetti />}
       <h1 className="title">Tenzies</h1>
       <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
       <div className="dice-container">
@@ -54,8 +70,9 @@ function App() {
         className="roll-dice"
         onClick={rollDice}
       >
-        Roll Dice
+        {tenzies ? "New Game" : "Roll Dice"}
       </button>
+      {tenzies ? <h1 className="won">You won!</h1> : ""}
     </main>
   );
 }
